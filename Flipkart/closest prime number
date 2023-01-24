@@ -1,0 +1,63 @@
+Given two positive integers left and right, find the two integers num1 and num2 such that:
+
+left <= nums1 < nums2 <= right .
+nums1 and nums2 are both prime numbers.
+nums2 - nums1 is the minimum amongst all other pairs satisfying the above conditions.
+Return the positive integer array ans = [nums1, nums2]. If there are multiple pairs satisfying these conditions, return the one with the minimum nums1 value or [-1, -1] if such numbers do not exist.
+
+A number greater than 1 is called prime if it is only divisible by 1 and itself.
+
+ 
+
+Example 1:
+
+Input: left = 10, right = 19
+Output: [11,13]
+Explanation: The prime numbers between 10 and 19 are 11, 13, 17, and 19.
+The closest gap between any pair is 2, which can be achieved by [11,13] or [17,19].
+Since 11 is smaller than 17, we return the first pair.
+Example 2:
+
+Input: left = 4, right = 6
+Output: [-1,-1]
+Explanation: There exists only one prime number in the given range, so the conditions cannot be satisfied.
+ 
+
+Constraints:
+
+1 <= left <= right <= 106
+
+code:-
+vector<int> nums(1000001, 1);
+class Solution {
+public:
+    void findPrimes(){
+        nums[1] = 0;
+        for(int i = 3; i < 1000; i+=2){
+            for(int j = i*i; j < 1000000; j = j + i){
+                nums[j] = 0;
+            }
+        }
+    }
+    vector<int> closestPrimes(int left, int right) {
+        if(nums[2] == 1) findPrimes();
+        int ans = -1, diff = INT_MAX, n1 = -1, n2 = -1;
+        if(left <= 2) { n2 = 2; left = 3; }
+        if(left%2 == 0) left++;
+        for(int i = left; i <= right; i+=2){
+            if(nums[i]){
+                if(n2 == -1) n2 = i;
+                else{
+                    n1 = n2;
+                    n2 = i;
+                    if(diff > n2 - n1){
+                        diff = n2 - n1;
+                        ans = n1; 
+                    }
+                }
+            }
+        }
+        if( n1 == -1) return {-1, -1};
+        return {ans, ans + diff};
+    }
+};
